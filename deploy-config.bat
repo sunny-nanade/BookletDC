@@ -6,7 +6,7 @@ REM ================================================================
 REM GitHub Repository Settings
 REM Replace 'your-username' with your actual GitHub username
 REM Replace 'BookletDC' with your repository name if different
-set GITHUB_USER=your-username
+set GITHUB_USER=sunny-nanade
 set GITHUB_REPO=BookletDC
 
 REM Branch to deploy (usually 'main' or 'master')

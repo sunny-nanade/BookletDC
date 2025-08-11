@@ -5,7 +5,7 @@ REM  Run this file in any empty folder to install and start
 REM ================================================================
 
 REM CONFIGURATION - Update these for your GitHub repository
-set REPO_USER=your-username
+set REPO_USER=sunny-nanade
 set REPO_NAME=BookletDC
 
 REM Auto-generated URLs
@@ -51,7 +51,14 @@ powershell -Command "Expand-Archive 'temp.zip' -Force"
 move "%REPO_NAME%-main" "%REPO_NAME%" >nul 2>&1
 del temp.zip
 
-echo [3/3] Starting Booklet Scanner...
+echo [3/4] Creating desktop shortcut...
+if exist "%REPO_NAME%\create_desktop_shortcut.bat" (
+    cd %REPO_NAME%
+    call create_desktop_shortcut.bat >nul 2>&1
+    cd ..
+)
+
+echo [4/4] Starting Booklet Scanner...
 if exist "%REPO_NAME%\start.bat" (
     cd %REPO_NAME%
     echo.
