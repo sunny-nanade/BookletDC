@@ -91,12 +91,14 @@ echo Installing Python with the following options:
             set PYTHON_CMD=py
             echo [OK] Python verification successful!
             py --version
+            goto :pythonfound
         ) else (
             python --version >nul 2>&1
             if %errorlevel% equ 0 (
                 set PYTHON_CMD=python
                 echo [OK] Python verification successful!
                 python --version
+                goto :pythonfound
             ) else (
                 echo [WARNING] Python installed but not immediately available
                 echo Please restart this script or open a new command prompt
@@ -111,12 +113,6 @@ echo Installing Python with the following options:
         pause
         exit /b 1
     )
-) else (
-    echo [ERROR] Python installer not found: PythonSetup\python-3.9.13-amd64.exe
-    echo Please download Python 3.9.13 and place it in the PythonSetup folder
-    pause
-    exit /b 1
-)
 
 :pythonfound
 echo.
