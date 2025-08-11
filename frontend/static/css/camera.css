@@ -1,0 +1,213 @@
+/* Camera Styles - Camera preview and configuration */
+
+.camera-preview-area {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.camera-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.camera-preview {
+    aspect-ratio: 9/16;
+    height: calc(90vh - 40px);
+    width: calc((90vh - 40px) * 9 / 16);
+    background-color: #f0f0f0;
+    border: 2px solid #9C231B;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Direct video element styling - let JavaScript handle all scaling */
+.camera-preview video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Canvas fallback styling - let JavaScript handle all scaling */
+.camera-preview canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.camera-placeholder {
+    color: #9C231B;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.camera-info-overlay {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+}
+
+.resolution-info {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.resolution-info::before {
+    content: "🎥";
+    font-size: 14px;
+}
+
+.camera-configuration-area {
+    flex: 1;
+    min-width: 200px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: calc(90vh - 40px);
+}
+
+.camera-configuration-area h3 {
+    color: #9C231B;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.config-controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Camera Configuration Controls */
+.camera-config-container {
+    display: flex;
+    gap: 8px;
+}
+
+.camera-config-section {
+    flex: 1;
+    margin-bottom: 10px;
+}
+
+.camera-config-section .camera-config-label {
+    font-size: 0.75rem;
+    color: #333;
+    margin-bottom: 4px;
+    display: block;
+    font-weight: bold;
+    text-align: center;
+}
+
+.camera-config-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.config-control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.config-control-label {
+    font-size: 0.65rem;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.config-select {
+    width: 80px;
+    height: 25px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    padding: 2px;
+    background-color: white;
+}
+
+.config-select:focus {
+    outline: none;
+    border-color: #9C231B;
+}
+
+/* Camera Responsive Styles */
+@media (max-width: 768px) {
+    .camera-preview-area {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .camera-container {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .camera-preview {
+        height: calc(40vh - 15px);
+        width: calc((40vh - 15px) * 9 / 16);
+    }
+
+    .camera-placeholder {
+        font-size: 1rem;
+    }
+
+    .camera-configuration-area {
+        padding: 15px;
+        height: auto;
+        min-height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .camera-container {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .camera-preview {
+        height: calc(25vh - 10px);
+        width: calc((25vh - 10px) * 9 / 16);
+    }
+
+    .camera-placeholder {
+        font-size: 0.8rem;
+    }
+
+    .camera-configuration-area {
+        padding: 10px;
+        min-height: 150px;
+    }
+}
+
+/* Ensure canvas elements in preview scale properly */
+.camera-preview canvas {
+    max-width: 100%;
+    max-height: 100%;
+}

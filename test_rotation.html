@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rotation Test</title>
+    <script>
+        function testRotation() {
+            console.log("🔍 Testing rotation values...");
+            
+            // Test DOM elements
+            const leftRotateEl = document.getElementById('left-camera-rotate');
+            const rightRotateEl = document.getElementById('right-camera-rotate');
+            
+            if (leftRotateEl) {
+                console.log("Left rotation element found:", leftRotateEl.value);
+            } else {
+                console.log("❌ Left rotation element not found");
+            }
+            
+            if (rightRotateEl) {
+                console.log("Right rotation element found:", rightRotateEl.value);
+            } else {
+                console.log("❌ Right rotation element not found");
+            }
+            
+            // Test if testRotationValues function exists
+            if (typeof window.testRotationValues === 'function') {
+                console.log("✅ testRotationValues function found");
+                window.testRotationValues();
+            } else {
+                console.log("❌ testRotationValues function not found");
+            }
+        }
+        
+        // Run test after page loads
+        window.addEventListener('load', () => {
+            setTimeout(testRotation, 2000);
+        });
+    </script>
+</head>
+<body>
+    <h1>Rotation Test</h1>
+    <p>Check the console for test results.</p>
+    <button onclick="testRotation()">Test Rotation</button>
+    
+    <!-- Mock rotation elements for testing -->
+    <select id="left-camera-rotate">
+        <option value="0">0°</option>
+        <option value="90">90°</option>
+        <option value="180">180°</option>
+        <option value="270" selected>270°</option>
+    </select>
+    
+    <select id="right-camera-rotate">
+        <option value="0">0°</option>
+        <option value="90">90°</option>
+        <option value="180">180°</option>
+        <option value="270" selected>270°</option>
+    </select>
+</body>
+</html>

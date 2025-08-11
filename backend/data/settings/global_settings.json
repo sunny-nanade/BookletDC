@@ -1,0 +1,20 @@
+{
+  "mainPages": 4,
+  "supplementCount": 0,
+  "leftCameraDevice": "c08739dcc0d4a60e528ab4ea6802acd2225d7af8a35bf7be70f3e06d4daed17d",
+  "leftCameraResolution": "1440p",
+  "leftCameraRotate": 90,
+  "rightCameraDevice": "825ef4788454c3020d0b9765507bd24ae350c8118334796c6a25322be8f96282",
+  "rightCameraResolution": "1440p",
+  "rightCameraRotate": 90,
+  "leftTrimTop": 0,
+  "leftTrimBottom": 0,
+  "leftTrimLeft": 9,
+  "leftTrimRight": 4,
+  "rightTrimTop": 0,
+  "rightTrimBottom": 0,
+  "rightTrimLeft": 9,
+  "rightTrimRight": 4,
+  "lastModified": "2025-08-09T16:45:26.450438",
+  "version": "1.0.0"
+}

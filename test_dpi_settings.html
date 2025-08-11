@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DPI Settings Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .info { background: #f0f8ff; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .calculation { background: #fff8dc; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>DPI Settings Analysis for 1440p Document Scanning</h1>
+    
+    <div class="info">
+        <h2>Current Settings Analysis</h2>
+        <p><strong>Image Resolution:</strong> 1440 × 2560 pixels</p>
+        <p><strong>Previous DPI:</strong> 300 (default)</p>
+        <p><strong>New DPI:</strong> 400 (33% increase)</p>
+        <p><strong>Target A4 Coverage:</strong> 98% (reduces white space)</p>
+    </div>
+    
+    <div class="calculation">
+        <h2>DPI Impact on PDF Quality</h2>
+        <p><strong>At 300 DPI:</strong></p>
+        <ul>
+            <li>PDF page size: 121.92 × 216.75 mm</li>
+            <li>Print quality: Good for most documents</li>
+            <li>File size: Moderate</li>
+        </ul>
+        
+        <p><strong>At 400 DPI:</strong></p>
+        <ul>
+            <li>PDF page size: 91.44 × 162.56 mm</li>
+            <li>Print quality: Excellent for text and fine details</li>
+            <li>File size: Higher, but better quality</li>
+            <li>Document fills more of the A4 page (less white space)</li>
+        </ul>
+    </div>
+    
+    <div class="info">
+        <h2>Expected Improvements</h2>
+        <ul>
+            <li><strong>Reduced Empty Space:</strong> Higher DPI makes the document content larger relative to the page</li>
+            <li><strong>Better Text Quality:</strong> 400 DPI provides sharper text rendering</li>
+            <li><strong>Optimized Coverage:</strong> 98% A4 coverage ensures maximum page utilization</li>
+            <li><strong>Professional Quality:</strong> 400 DPI is ideal for business documents</li>
+        </ul>
+    </div>
+    
+    <div class="calculation">
+        <h2>Technical Details</h2>
+        <p><strong>1440p Image at 400 DPI:</strong></p>
+        <ul>
+            <li>Width: 1440px ÷ 400 DPI = 3.6 inches = 91.44 mm</li>
+            <li>Height: 2560px ÷ 400 DPI = 6.4 inches = 162.56 mm</li>
+            <li>A4 width utilization: 91.44mm ÷ 210mm = 43.5% → scaled to 98% = larger document</li>
+        </ul>
+    </div>
+    
+    <div class="info">
+        <h2>Recommendations</h2>
+        <ol>
+            <li><strong>Test the new 400 DPI setting</strong> - Should reduce empty space significantly</li>
+            <li><strong>If still too much space:</strong> Consider 450-500 DPI for maximum page filling</li>
+            <li><strong>For ultimate quality:</strong> Use 600 DPI (professional printing standard)</li>
+            <li><strong>Balance file size vs quality</strong> based on your needs</li>
+        </ol>
+    </div>
+    
+    <script>
+        console.log('DPI Settings Test Page Loaded');
+        console.log('Current configuration: 400 DPI with 98% A4 coverage');
+        console.log('Expected result: Significantly reduced white space around documents');
+    </script>
+</body>
+</html>
