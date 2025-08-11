@@ -46,9 +46,15 @@ if not exist "temp.zip" (
     pause & exit /b 1
 )
 
-echo [2/3] Extracting files...
-powershell -Command "Expand-Archive 'temp.zip' -Force"
-move "%REPO_NAME%-main" "%REPO_NAME%" >nul 2>&1
+echo [2/4] Extracting files...
+powershell -Command "Expand-Archive 'temp.zip' -DestinationPath 'temp-extract' -Force"
+if exist "temp-extract\%REPO_NAME%-main" (
+    move "temp-extract\%REPO_NAME%-main" "%REPO_NAME%" >nul 2>&1
+    rmdir temp-extract >nul 2>&1
+) else (
+    echo [ERROR] Extraction failed - unexpected folder structure
+    pause & exit /b 1
+)
 del temp.zip
 
 echo [3/4] Creating desktop shortcut...
