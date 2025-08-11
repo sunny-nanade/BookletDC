@@ -58,10 +58,18 @@ if exist "temp-extract\%REPO_NAME%-main" (
 del temp.zip
 
 echo [3/4] Creating desktop shortcut...
-if exist "%REPO_NAME%\create_desktop_shortcut.bat" (
+if exist "%REPO_NAME%\create_desktop_shortcut_silent.bat" (
     cd %REPO_NAME%
-    call create_desktop_shortcut.bat >nul 2>&1
+    call create_desktop_shortcut_silent.bat
     cd ..
+    echo [OK] Desktop shortcut created
+) else if exist "%REPO_NAME%\create_desktop_shortcut.bat" (
+    cd %REPO_NAME%
+    echo Y | call create_desktop_shortcut.bat >nul 2>&1
+    cd ..
+    echo [OK] Desktop shortcut created
+) else (
+    echo [WARNING] Desktop shortcut script not found
 )
 
 echo [4/4] Starting Booklet Scanner...

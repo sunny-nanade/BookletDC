@@ -260,8 +260,15 @@ echo [OK] Installation verified successfully
 
 echo.
 echo [INFO] Creating desktop shortcut...
-if exist "create_desktop_shortcut.bat" (
-    call create_desktop_shortcut.bat >nul 2>&1
+if exist "create_desktop_shortcut_silent.bat" (
+    call create_desktop_shortcut_silent.bat
+    if exist "%USERPROFILE%\Desktop\Booklet Scanner.lnk" (
+        echo [OK] Desktop shortcut created successfully
+    ) else (
+        echo [WARNING] Desktop shortcut creation failed
+    )
+) else if exist "create_desktop_shortcut.bat" (
+    echo Y | call create_desktop_shortcut.bat >nul 2>&1
     if exist "%USERPROFILE%\Desktop\Booklet Scanner.lnk" (
         echo [OK] Desktop shortcut created successfully
     ) else (

@@ -24,10 +24,51 @@ echo.
 echo Auto-installing Python 3.9.13...
 echo.
 
+REM Check if Python installer exists locally
 if exist "PythonSetup\python-3.9.13-amd64.exe" (
     echo [INFO] Found Python installer: PythonSetup\python-3.9.13-amd64.exe
+    set "PYTHON_INSTALLER=PythonSetup\python-3.9.13-amd64.exe"
+    goto :install_python
+)
+
+REM Download Python installer if not found
+echo [INFO] Python installer not found locally. Downloading from python.org...
+echo [INFO] This may take a few minutes depending on your internet speed...
+echo.
+
+REM Create PythonSetup directory if it doesn't exist
+if not exist "PythonSetup" mkdir "PythonSetup"
+
+REM Download Python 3.9.13 from official Python website
+set "PYTHON_URL=https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe"
+set "PYTHON_INSTALLER=PythonSetup\python-3.9.13-amd64.exe"
+
+echo [INFO] Downloading from: %PYTHON_URL%
+powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri '%PYTHON_URL%' -OutFile '%PYTHON_INSTALLER%' -UseBasicParsing; Write-Host '[OK] Download completed successfully' } catch { Write-Host '[ERROR] Download failed: ' + $_.Exception.Message; exit 1 }}"
+
+if %errorlevel% neq 0 (
+    echo [ERROR] Failed to download Python installer
+    echo [INFO] Please check your internet connection and try again
+    echo [INFO] Alternatively, you can:
+    echo [INFO] 1. Download Python 3.9.13 manually from python.org
+    echo [INFO] 2. Place it in PythonSetup\python-3.9.13-amd64.exe
+    echo [INFO] 3. Run this script again
     echo.
-    echo Installing Python with the following options:
+    pause
+    exit /b 1
+)
+
+if not exist "%PYTHON_INSTALLER%" (
+    echo [ERROR] Python installer download failed - file not found
+    pause
+    exit /b 1
+)
+
+echo [OK] Python installer downloaded successfully
+echo.
+
+:install_python
+echo Installing Python with the following options:
     echo - Add Python to PATH
     echo - Install for all users  
     echo - Include pip, tcl/tk and IDLE
@@ -36,7 +77,7 @@ if exist "PythonSetup\python-3.9.13-amd64.exe" (
     echo Starting installation... Please wait...
     echo.
     
-    "PythonSetup\python-3.9.13-amd64.exe" /passive InstallAllUsers=1 PrependPath=1 Include_pip=1 Include_launcher=1 InstallLauncherAllUsers=1 AssociateFiles=1 SimpleInstall=1
+    "%PYTHON_INSTALLER%" /passive InstallAllUsers=1 PrependPath=1 Include_pip=1 Include_launcher=1 InstallLauncherAllUsers=1 AssociateFiles=1 SimpleInstall=1
     
     if %errorlevel% equ 0 (
         echo.
