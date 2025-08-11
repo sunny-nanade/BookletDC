@@ -73,7 +73,25 @@ if exist "%REPO_NAME%\create_desktop_shortcut_silent.bat" (
 )
 
 echo [4/4] Starting Booklet Scanner...
-if exist "%REPO_NAME%\start.bat" (
+
+REM Check for Anaconda and use appropriate launcher
+if exist "%REPO_NAME%\start_anaconda_safe.bat" (
+    cd %REPO_NAME%
+    
+    REM Detect if Anaconda is present
+    where conda >nul 2>&1
+    if %errorlevel% equ 0 (
+        echo.
+        echo [INFO] Anaconda/Conda detected - using Anaconda-safe launcher
+        echo.
+        call start_anaconda_safe.bat
+    ) else (
+        echo.
+        echo [INFO] Standard Python installation - using regular launcher
+        echo.
+        call start.bat
+    )
+) else if exist "%REPO_NAME%\start.bat" (
     cd %REPO_NAME%
     echo.
     call start.bat

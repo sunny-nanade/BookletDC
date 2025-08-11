@@ -3,20 +3,45 @@ echo Starting Booklet Scanner Application...
 echo.
 
 echo Checking Python installation...
-py --version >nul 2>&1
-if %errorlevel% equ 0 (
-    set PYTHON_CMD=py
-    echo [OK] Python found using 'py' launcher
-    py --version
-    goto :pythonfound
-)
 
+REM Anaconda-safe Python detection
+set PYTHON_CMD=
+set PYTHON_FOUND=0
+
+REM Method 1: Try standard python command first (works better with Anaconda)
 python --version >nul 2>&1
 if %errorlevel% equ 0 (
     set PYTHON_CMD=python
+    set PYTHON_FOUND=1
     echo [OK] Python found using 'python' command
     python --version
-    goto :pythonfound
+    echo.
+    echo Setting up virtual environment...
+    goto :setup_venv
+)
+
+REM Method 2: Try py launcher as fallback
+py --version >nul 2>&1
+if %errorlevel% equ 0 (
+    set PYTHON_CMD=py
+    set PYTHON_FOUND=1
+    echo [OK] Python found using 'py' launcher
+    py --version
+    echo.
+    echo Setting up virtual environment...
+    goto :setup_venv
+)
+
+REM Method 3: Try python3 command
+python3 --version >nul 2>&1
+if %errorlevel% equ 0 (
+    set PYTHON_CMD=python3
+    set PYTHON_FOUND=1
+    echo [OK] Python found using 'python3' command
+    python3 --version
+    echo.
+    echo Setting up virtual environment...
+    goto :setup_venv
 )
 
 echo [ERROR] Python is not installed or not accessible
@@ -91,14 +116,14 @@ echo Installing Python with the following options:
             set PYTHON_CMD=py
             echo [OK] Python verification successful!
             py --version
-            goto :pythonfound
+            goto :setup_venv
         ) else (
             python --version >nul 2>&1
             if %errorlevel% equ 0 (
                 set PYTHON_CMD=python
                 echo [OK] Python verification successful!
                 python --version
-                goto :pythonfound
+                goto :setup_venv
             ) else (
                 echo [WARNING] Python installed but not immediately available
                 echo Please restart this script or open a new command prompt
@@ -114,7 +139,7 @@ echo Installing Python with the following options:
         exit /b 1
     )
 
-:pythonfound
+:setup_venv
 echo.
 echo Setting up virtual environment...
 if not exist "venv" (
