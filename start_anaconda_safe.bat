@@ -208,8 +208,8 @@ echo Starting Booklet Scanner Application...
 echo Opening browser at: http://127.0.0.1:9000
 echo.
 
-REM Start the Python server
-python backend/main.py
+REM Start the Python server using uvicorn
+uvicorn backend.main:app --host 0.0.0.0 --port 9000 --reload
 
 echo.
 echo Server stopped. Press any key to exit...

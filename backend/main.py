@@ -13,9 +13,21 @@ import os
 import asyncio
 import signal
 from pathlib import Path
+import sys
+import os
 
-# Import API modules
-from .api import camera, scanner, pdf_api, websocket_handler, settings, image_storage
+# Add parent directory to path for imports
+current_dir = Path(__file__).parent
+parent_dir = current_dir.parent
+sys.path.insert(0, str(parent_dir))
+sys.path.insert(0, str(current_dir))
+
+# Import API modules - try relative import first, then absolute
+try:
+    from .api import camera, scanner, pdf_api, websocket_handler, settings, image_storage
+except ImportError:
+    # Fallback to absolute imports when running directly
+    from api import camera, scanner, pdf_api, websocket_handler, settings, image_storage
 
 # Get the current directory
 BASE_DIR = Path(__file__).parent

@@ -226,8 +226,8 @@ echo Starting Booklet Scanner Application...
 echo Opening browser at: http://127.0.0.1:9000
 echo.
 
-REM Start the server
-start /min cmd /c "python backend/main.py"
+REM Start the server using uvicorn
+start /min cmd /c "uvicorn backend.main:app --host 0.0.0.0 --port 9000 --reload"
 
 REM Give server time to start
 timeout /t 3 /nobreak >nul
