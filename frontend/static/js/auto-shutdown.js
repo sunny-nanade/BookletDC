@@ -6,49 +6,87 @@
 class AutoShutdown {
     constructor() {
         this.shutdownSent = false;
+        this.isRefreshing = false;
+        this.isNavigating = false;
         this.setupEventListeners();
         console.log('🔄 Auto-shutdown system initialized - server will stop when browser closes');
-        console.log('🔄 Available shutdown triggers: beforeunload, unload, visibilitychange, blur');
+        console.log('🔄 Will NOT shutdown on refresh or navigation - only on actual browser close');
     }
 
     setupEventListeners() {
-        // Handle page unload (when tab/window is closed)
+        // Detect refresh/navigation attempts
         window.addEventListener('beforeunload', (e) => {
-            console.log('🔄 beforeunload event triggered - sending shutdown signal');
+            console.log('🔄 beforeunload event triggered');
+            
+            // Check if this is a refresh (F5, Ctrl+R, or navigation)
+            if (performance.navigation.type === 1) {
+                console.log('🔄 Page refresh detected - NOT sending shutdown signal');
+                this.isRefreshing = true;
+                return;
+            }
+            
+            // Check if this is navigation to another page
+            if (e.returnValue !== undefined || e.defaultPrevented) {
+                console.log('🔄 Navigation detected - NOT sending shutdown signal');
+                this.isNavigating = true;
+                return;
+            }
+            
+            // Only send shutdown if this appears to be a real window close
+            console.log('🔄 Window close detected - sending shutdown signal');
             this.sendShutdownSignal();
         });
 
+        // Handle actual page unload - but only if not refreshing
         window.addEventListener('unload', () => {
-            console.log('🔄 unload event triggered - sending shutdown signal');
+            if (this.isRefreshing || this.isNavigating) {
+                console.log('🔄 unload triggered but refresh/navigation detected - NOT shutting down');
+                return;
+            }
+            console.log('🔄 unload event triggered - window being closed');
             this.sendShutdownSignal();
         });
 
-        // Handle visibility change (when tab becomes hidden)
+        // Handle visibility change with longer delay to avoid false positives
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
-                console.log('🔄 Page became hidden - waiting 3 seconds before shutdown');
-                // Wait a bit to see if user is just switching tabs
+                console.log('🔄 Page became hidden - waiting 10 seconds before checking');
+                // Wait longer to see if user is just switching tabs or apps
                 setTimeout(() => {
-                    if (document.visibilityState === 'hidden') {
-                        console.log('🔄 Page still hidden after 3 seconds - sending shutdown signal');
+                    if (document.visibilityState === 'hidden' && !this.isRefreshing && !this.isNavigating) {
+                        console.log('🔄 Page still hidden after 10 seconds - sending shutdown signal');
                         this.sendShutdownSignal();
                     }
-                }, 3000); // Wait 3 seconds
+                }, 10000); // Wait 10 seconds
+            } else {
+                console.log('🔄 Page became visible again');
+                this.isRefreshing = false;
+                this.isNavigating = false;
+            }
+        });
+        
+        // Alternative approach: Use pagehide event which is more reliable
+        window.addEventListener('pagehide', (e) => {
+            // persisted = true means the page is being cached (like back/forward navigation)
+            // persisted = false usually means page is being unloaded completely
+            if (!e.persisted && !this.isRefreshing && !this.isNavigating) {
+                console.log('🔄 pagehide with no cache - window likely being closed');
+                this.sendShutdownSignal();
+            } else if (e.persisted) {
+                console.log('🔄 pagehide with cache - navigation detected, NOT shutting down');
             }
         });
 
-        // Handle page focus loss
-        window.addEventListener('blur', () => {
-            console.log('🔄 Window lost focus - waiting 5 seconds before shutdown');
-            setTimeout(() => {
-                if (!document.hasFocus()) {
-                    console.log('🔄 Window still without focus after 5 seconds - sending shutdown signal');
-                    this.sendShutdownSignal();
-                }
-            }, 5000); // Wait 5 seconds
+        // Detect keyboard shortcuts that indicate refresh
+        document.addEventListener('keydown', (e) => {
+            // F5 or Ctrl+R or Cmd+R
+            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.metaKey && e.key === 'r')) {
+                console.log('🔄 Refresh keyboard shortcut detected');
+                this.isRefreshing = true;
+            }
         });
         
-        console.log('✅ Auto-shutdown event listeners registered');
+        console.log('✅ Auto-shutdown event listeners registered (intelligent mode)');
     }
 
     async sendShutdownSignal() {
@@ -81,7 +119,8 @@ class AutoShutdown {
 
     // Manual shutdown method
     manualShutdown() {
-        console.log('🛑 Manual shutdown requested');
+        console.log('🛑 Manual shutdown requested - bypassing refresh detection');
+        this.shutdownSent = false; // Reset flag to allow manual shutdown
         this.sendShutdownSignal();
     }
 }

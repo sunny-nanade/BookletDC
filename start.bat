@@ -169,8 +169,9 @@ echo ============================================
 echo  AUTO-SHUTDOWN ENABLED:
 echo  - Server will automatically stop when you
 echo    close the browser tab or window
-echo  - No need to manually stop the server!
-echo  - Just close the browser when done
+echo  - Page refresh will NOT trigger shutdown
+echo  - Use the red "Shutdown Server" button or
+echo    close the browser window when done
 echo ============================================
 echo.
 echo Server starting... Browser should open automatically.
