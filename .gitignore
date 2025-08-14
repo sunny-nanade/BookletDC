@@ -1,6 +1,10 @@
 # Large files that should not be in Git repository
 PythonSetup/python-3.9.13-amd64.exe
 
+# Generated icon files
+assets/nmims_square.ico
+assets/nmims_fixed.ico
+
 # Virtual Environment
 venv/
 env/
