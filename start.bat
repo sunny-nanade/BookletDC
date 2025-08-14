@@ -166,11 +166,11 @@ start http://127.0.0.1:9000
 
 echo.
 echo ============================================
-echo  AUTO-SHUTDOWN:
-echo  - Close browser tab/window to attempt shutdown
-echo  - May not work reliably due to browser restrictions
-echo  - Close terminal window manually: Ctrl+C then Y
-echo  - Or just close terminal window directly
+echo  MANUAL SHUTDOWN ONLY:
+echo  - Auto-shutdown is DISABLED
+echo  - To stop: Close terminal window (X button)
+echo  - Or press Ctrl+C in terminal, then Y
+echo  - Refresh and scan freely without interruption!
 echo ============================================
 echo.
 echo Server starting... Browser should open automatically.

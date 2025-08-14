@@ -69,24 +69,6 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "message": "Booklet Scanner API is running"}
 
-@app.post("/api/shutdown")
-async def shutdown_server():
-    """Shutdown the server gracefully when browser is closed"""
-    print("🛑 Shutdown request received from browser")
-    print("📹 Releasing camera resources...")
-    print("💾 Saving any pending data...")
-    
-    # Schedule shutdown after a brief delay to allow response to be sent
-    async def delayed_shutdown():
-        await asyncio.sleep(1)  # Give time for response to be sent
-        print("✅ Server shutting down gracefully...")
-        os.kill(os.getpid(), signal.SIGTERM)
-    
-    # Start the shutdown process
-    asyncio.create_task(delayed_shutdown())
-    
-    return {"status": "success", "message": "Server shutdown initiated"}
-
 @app.on_event("startup")
 async def startup_event():
     """Initialize application on startup"""
