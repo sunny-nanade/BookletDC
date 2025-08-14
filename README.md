@@ -2,6 +2,18 @@
 
 A powerful web-based document scanning application with QR code detection, automatic PDF generation, and professional document processing capabilities.
 
+## 🚀 **Quick Start - Get Started in 60 Seconds!**
+
+**[📥 Download Installer](https://github.com/sunny-nanade/BookletDC/raw/main/install-booklet-scanner.bat)** ← *Click to download and run!*
+
+1. **Download** the installer above
+2. **Create** an empty folder and place the file there  
+3. **Double-click** the installer
+4. **Wait** for automatic setup
+5. **Start scanning!** Browser opens automatically
+
+---
+
 ## ✨ Features
 
 - 📷 **Live Camera Scanning** - Real-time document capture with OpenCV
@@ -12,21 +24,27 @@ A powerful web-based document scanning application with QR code detection, autom
 - 🔧 **Settings Management** - Persistent configuration storage
 - 🚀 **Easy Installation** - One-click installer with automatic Python setup
 
-## 🚀 Quick Installation
+## � Installation Options
 
-### Option 1: One-Click Installer (Recommended)
-1. Download `install-booklet-scanner.bat` from this repository
+### 🎯 **Option 1: One-Click Installer (Recommended)**
+**[📥 Download install-booklet-scanner.bat](https://github.com/sunny-nanade/BookletDC/raw/main/install-booklet-scanner.bat)**
+
+1. Download the installer from the link above
 2. Create an empty folder and put the file there
-3. Double-click the file
+3. Double-click the file  
 4. Wait for automatic installation
 5. **Booklet Scanner starts automatically with desktop shortcut created!**
 
-### Option 2: Full Deployment Manager
-1. Download `deploy-manager.bat` and `deploy-config.bat`
+### 🛠️ **Option 2: Advanced Deployment Manager**
+For advanced users who want more control:
+
+1. Download both files:
+   - **[deploy-manager.bat](https://github.com/sunny-nanade/BookletDC/raw/main/deploy-manager.bat)**  
+   - **[deploy-config.bat](https://github.com/sunny-nanade/BookletDC/raw/main/deploy-config.bat)**
 2. Put both files in an empty folder
 3. Run `deploy-manager.bat`
 4. Follow the prompts
-5. **Desktop shortcut with NMIMS logo created automatically!**
+5. **Desktop shortcut with custom branding created automatically!**
 
 ## 📋 System Requirements
 
@@ -116,7 +134,9 @@ start.bat
 
 ## 📄 License
 
-Check the repository for licensing information.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+**Free for commercial and personal use!** ✨
 
 ## 🏗️ Built With
 
@@ -129,9 +149,13 @@ Check the repository for licensing information.
 
 ## 🎉 Getting Started
 
-Ready to start scanning? Download the installer and you'll be up and running in minutes!
+Ready to start scanning? **[Click here to download the installer](https://github.com/sunny-nanade/BookletDC/raw/main/install-booklet-scanner.bat)** and you'll be up and running in minutes!
 
-[📥 Download Install-booklet-scanner.bat](https://github.com/sunny-nanade/BookletDC/raw/main/install-booklet-scanner.bat)
+### � **Documentation & Support**
+- **[📖 Complete Wiki Documentation](https://github.com/sunny-nanade/BookletDC/wiki)** - Installation guides, troubleshooting, and more
+- **[🚀 Quick Start Guide](https://github.com/sunny-nanade/BookletDC/wiki/Quick-Start)** - Get running in 5 minutes
+- **[🛠️ Troubleshooting](https://github.com/sunny-nanade/BookletDC/wiki/Troubleshooting)** - Solve common issues
+- **[🐛 Report Issues](https://github.com/sunny-nanade/BookletDC/issues)** - Get help or report bugs
 
 ---
 

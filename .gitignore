@@ -45,12 +45,53 @@ wheels/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
-# Application specific
+# Application specific storage (user data)
 storage/scanned_images/*
+storage/processed_images/*
 storage/generated_pdfs/*
+storage/temp_images/*
+storage/final_pdfs/*
+
+# Keep directory structure but ignore contents
 !storage/scanned_images/.gitkeep
+!storage/processed_images/.gitkeep
 !storage/generated_pdfs/.gitkeep
+!storage/temp_images/.gitkeep
+!storage/final_pdfs/.gitkeep
+
+# Development and test files (should not be in production)
+test_*.html
+test_*.js
+test_*.txt
+test_*.bat
+test-*.bat
+debug.html
+*_corrupted.*
+*_clean.*
+modernized.html
+add_auto_shutdown.html
+
+# Development scripts
+cleanup_*.ps1
+run_server.py
+stop_server.bat
+check-python.bat
+start.ps1
+start.sh
+start_clean.*
+
+# Development documentation (keep only main README and wiki-content)
+ANACONDA-*.md
+DEPLOYMENT-*.md
+INSTALLER-*.md
+PYTHON-*.md
+HOME-PAGE-FINAL.md
+COPY-TO-*.txt
+*-wiki-*.bat
+*-wiki-*.ps1
+fix-*.ps1
 
 # Logs
 *.log
@@ -64,3 +105,5 @@ logs/
 # Temporary files
 tmp/
 temp/
+*.tmp
+*.temp
