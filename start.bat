@@ -167,11 +167,10 @@ start http://127.0.0.1:9000
 echo.
 echo ============================================
 echo  AUTO-SHUTDOWN ENABLED:
-echo  - Server will automatically stop when you
-echo    close the browser tab or window
-echo  - Page refresh will NOT trigger shutdown
-echo  - Use the red "Shutdown Server" button or
-echo    close the browser window when done
+echo  - Server uses heartbeat to detect browser close
+echo  - Will auto-shutdown 5 seconds after browser close
+echo  - Red "Shutdown Server" button for immediate shutdown
+echo  - Page refresh is safe and won't shutdown server
 echo ============================================
 echo.
 echo Server starting... Browser should open automatically.

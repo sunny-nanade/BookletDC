@@ -6,87 +6,88 @@
 class AutoShutdown {
     constructor() {
         this.shutdownSent = false;
-        this.isRefreshing = false;
-        this.isNavigating = false;
+        this.heartbeatInterval = null;
+        this.lastHeartbeat = Date.now();
         this.setupEventListeners();
+        this.startHeartbeat();
         console.log('🔄 Auto-shutdown system initialized - server will stop when browser closes');
-        console.log('🔄 Will NOT shutdown on refresh or navigation - only on actual browser close');
+        console.log('🔄 Using heartbeat mechanism + immediate shutdown detection');
     }
 
     setupEventListeners() {
-        // Detect refresh/navigation attempts
+        // Immediate shutdown on page unload - simplified approach
         window.addEventListener('beforeunload', (e) => {
-            console.log('🔄 beforeunload event triggered');
-            
-            // Check if this is a refresh (F5, Ctrl+R, or navigation)
-            if (performance.navigation.type === 1) {
-                console.log('🔄 Page refresh detected - NOT sending shutdown signal');
-                this.isRefreshing = true;
-                return;
-            }
-            
-            // Check if this is navigation to another page
-            if (e.returnValue !== undefined || e.defaultPrevented) {
-                console.log('🔄 Navigation detected - NOT sending shutdown signal');
-                this.isNavigating = true;
-                return;
-            }
-            
-            // Only send shutdown if this appears to be a real window close
-            console.log('🔄 Window close detected - sending shutdown signal');
+            console.log('🔄 beforeunload event - attempting immediate shutdown');
             this.sendShutdownSignal();
         });
 
-        // Handle actual page unload - but only if not refreshing
         window.addEventListener('unload', () => {
-            if (this.isRefreshing || this.isNavigating) {
-                console.log('🔄 unload triggered but refresh/navigation detected - NOT shutting down');
-                return;
-            }
-            console.log('🔄 unload event triggered - window being closed');
+            console.log('🔄 unload event - attempting immediate shutdown');
             this.sendShutdownSignal();
         });
 
-        // Handle visibility change with longer delay to avoid false positives
+        // More reliable: pagehide event
+        window.addEventListener('pagehide', (e) => {
+            console.log('🔄 pagehide event - attempting immediate shutdown');
+            this.sendShutdownSignal();
+        });
+
+        // Handle visibility change with shorter delay
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
-                console.log('🔄 Page became hidden - waiting 10 seconds before checking');
-                // Wait longer to see if user is just switching tabs or apps
-                setTimeout(() => {
-                    if (document.visibilityState === 'hidden' && !this.isRefreshing && !this.isNavigating) {
-                        console.log('🔄 Page still hidden after 10 seconds - sending shutdown signal');
-                        this.sendShutdownSignal();
-                    }
-                }, 10000); // Wait 10 seconds
+                console.log('🔄 Page became hidden - stopping heartbeat, server will auto-shutdown in ~5 seconds');
+                this.stopHeartbeat();
             } else {
-                console.log('🔄 Page became visible again');
-                this.isRefreshing = false;
-                this.isNavigating = false;
-            }
-        });
-        
-        // Alternative approach: Use pagehide event which is more reliable
-        window.addEventListener('pagehide', (e) => {
-            // persisted = true means the page is being cached (like back/forward navigation)
-            // persisted = false usually means page is being unloaded completely
-            if (!e.persisted && !this.isRefreshing && !this.isNavigating) {
-                console.log('🔄 pagehide with no cache - window likely being closed');
-                this.sendShutdownSignal();
-            } else if (e.persisted) {
-                console.log('🔄 pagehide with cache - navigation detected, NOT shutting down');
+                console.log('🔄 Page became visible again - resuming heartbeat');
+                this.startHeartbeat();
             }
         });
 
-        // Detect keyboard shortcuts that indicate refresh
-        document.addEventListener('keydown', (e) => {
-            // F5 or Ctrl+R or Cmd+R
-            if (e.key === 'F5' || (e.ctrlKey && e.key === 'r') || (e.metaKey && e.key === 'r')) {
-                console.log('🔄 Refresh keyboard shortcut detected');
-                this.isRefreshing = true;
-            }
+        // Handle focus loss
+        window.addEventListener('blur', () => {
+            console.log('🔄 Window lost focus - stopping heartbeat');
+            this.stopHeartbeat();
+        });
+
+        window.addEventListener('focus', () => {
+            console.log('🔄 Window gained focus - resuming heartbeat');
+            this.startHeartbeat();
         });
         
-        console.log('✅ Auto-shutdown event listeners registered (intelligent mode)');
+        console.log('✅ Auto-shutdown event listeners registered (heartbeat + immediate mode)');
+    }
+
+    startHeartbeat() {
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval);
+        }
+        
+        this.heartbeatInterval = setInterval(() => {
+            this.sendHeartbeat();
+        }, 2000); // Send heartbeat every 2 seconds
+        
+        console.log('� Heartbeat started - server will know browser is alive');
+    }
+
+    stopHeartbeat() {
+        if (this.heartbeatInterval) {
+            clearInterval(this.heartbeatInterval);
+            this.heartbeatInterval = null;
+            console.log('� Heartbeat stopped - server will auto-shutdown if no heartbeat for 5 seconds');
+        }
+    }
+
+    async sendHeartbeat() {
+        try {
+            await fetch('/api/heartbeat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ timestamp: Date.now() })
+            });
+            this.lastHeartbeat = Date.now();
+        } catch (error) {
+            console.error('💔 Heartbeat failed:', error);
+        }
     }
 
     async sendShutdownSignal() {
@@ -119,7 +120,8 @@ class AutoShutdown {
 
     // Manual shutdown method
     manualShutdown() {
-        console.log('🛑 Manual shutdown requested - bypassing refresh detection');
+        console.log('🛑 Manual shutdown requested - stopping heartbeat and shutting down immediately');
+        this.stopHeartbeat();
         this.shutdownSent = false; // Reset flag to allow manual shutdown
         this.sendShutdownSignal();
     }

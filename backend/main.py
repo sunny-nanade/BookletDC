@@ -15,6 +15,8 @@ import signal
 from pathlib import Path
 import sys
 import os
+import time
+from datetime import datetime, timedelta
 
 # Add parent directory to path for imports
 current_dir = Path(__file__).parent
@@ -39,6 +41,11 @@ app = FastAPI(
     description="API for scanning booklets with dual cameras and PDF generation",
     version="1.0.0"
 )
+
+# Heartbeat tracking
+last_heartbeat = time.time()
+heartbeat_timeout = 5  # seconds
+shutdown_task = None
 
 # Mount static files
 app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR / "static")), name="static")
@@ -69,6 +76,39 @@ async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "message": "Booklet Scanner API is running"}
 
+@app.post("/api/heartbeat")
+async def heartbeat():
+    """Receive heartbeat from browser to keep server alive"""
+    global last_heartbeat, shutdown_task
+    last_heartbeat = time.time()
+    
+    # Cancel any pending shutdown
+    if shutdown_task and not shutdown_task.done():
+        shutdown_task.cancel()
+        shutdown_task = None
+    
+    return {"status": "alive", "timestamp": last_heartbeat}
+
+async def check_heartbeat():
+    """Monitor heartbeat and shutdown if browser disconnects"""
+    global last_heartbeat, shutdown_task
+    
+    while True:
+        await asyncio.sleep(1)  # Check every second
+        
+        if time.time() - last_heartbeat > heartbeat_timeout:
+            print(f"💔 No heartbeat for {heartbeat_timeout} seconds - browser likely closed")
+            print("🛑 Initiating auto-shutdown...")
+            
+            # Schedule shutdown
+            async def delayed_shutdown():
+                await asyncio.sleep(1)
+                print("✅ Server shutting down gracefully...")
+                os.kill(os.getpid(), signal.SIGTERM)
+            
+            shutdown_task = asyncio.create_task(delayed_shutdown())
+            break
+
 @app.post("/api/shutdown")
 async def shutdown_server():
     """Shutdown the server gracefully when browser is closed"""
@@ -90,7 +130,15 @@ async def shutdown_server():
 @app.on_event("startup")
 async def startup_event():
     """Initialize application on startup"""
+    global last_heartbeat
     print("🚀 Starting Booklet Scanner API...")
+    
+    # Initialize heartbeat
+    last_heartbeat = time.time()
+    
+    # Start heartbeat monitor
+    asyncio.create_task(check_heartbeat())
+    print("💓 Heartbeat monitor started - will auto-shutdown if browser disconnects")
     
     # Create storage directories
     storage_dirs = [
