@@ -165,8 +165,6 @@ Ready to start scanning? **[Right-click here and "Save As" to download the insta
 
 Made with ❤️ in MPSTME (Mukesh Patel School of Technology Management & Engineering)
 
-**Created by Dr. Sunny Nanade**
-
 ---
 
 **Happy Scanning!**

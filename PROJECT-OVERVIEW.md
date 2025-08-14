@@ -119,8 +119,6 @@
 
 Made with ❤️ in MPSTME (Mukesh Patel School of Technology Management & Engineering)
 
-**Project Lead:** Dr. Sunny Nanade
-
 ### About NMIMS MPSTME
 MPSTME is a leading technology and management school that focuses on innovation in education and practical application of technology. This project represents our commitment to creating solutions that benefit the broader community.
 
