@@ -5,6 +5,16 @@ PythonSetup/python-3.9.13-amd64.exe
 assets/nmims_square.ico
 assets/nmims_fixed.ico
 
+# Runtime data and user settings
+backend/data/settings/global_settings.json
+backend/data/settings/*.json
+storage/generated_pdfs/*.json
+storage/generated_pdfs/*.pdf
+storage/final_pdfs/
+storage/processed_images/
+storage/scanned_images/
+storage/temp_images/
+
 # Virtual Environment
 venv/
 env/
