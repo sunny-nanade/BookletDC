@@ -144,6 +144,8 @@ class QRDetector {
         this.updateScannerGunUI('Listening', 'standby');
         
         // Enhanced event listener with multiple capture methods
+        // NOTE: Using capture phase to detect scanner gun input BEFORE form elements process it
+        // BUT we filter out form elements to prevent interference with trim settings
         document.addEventListener('keydown', (event) => {
             this.handleScannerInput(event);
         }, true); // Use capture phase
@@ -154,24 +156,38 @@ class QRDetector {
         }, true);
         
         console.log('🔫 Scanner gun listener active - waiting for fast keyboard input');
+        console.log('🛡️ Form elements (trim inputs) are protected from scanner gun interference');
         console.log('� Note: Browser cannot detect if physical scanner is connected');
     }
 
     handleScannerInput(event) {
         if (!this.scannerGunEnabled) return;
         
+        // CRITICAL FIX: Ignore inputs from form elements to prevent interference with trim settings
+        const target = event.target;
+        if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable)) {
+            // Allow normal form input behavior - don't intercept
+            return;
+        }
+        
         // Detect fast typing characteristic of scanner guns
         const now = Date.now();
         const timeBetweenKeys = now - this.lastKeyTime;
         this.lastKeyTime = now;
         
-        // Log all keystrokes for debugging
+        // Log all keystrokes for debugging (only non-form elements)
         if (event.key && event.key.length === 1) {
             console.log('🔫 Key detected:', event.key, 'Time since last:', timeBetweenKeys + 'ms', 'Buffer:', this.scannerBuffer);
         }
         
         // Scanner guns typically send data fast and end with Enter
         if (event.key === 'Enter' || event.keyCode === 13) {
+            // SAFETY CHECK: Don't interfere with form submissions
+            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT')) {
+                console.log('🔫 Enter key in form element - allowing normal behavior');
+                return;
+            }
+            
             if (this.scannerBuffer.length > 3) { // Minimum QR length
                 console.log('🔫 Scanner gun QR COMPLETE (Enter):', this.scannerBuffer);
                 this.handleScannerGunQR(this.scannerBuffer.trim());
@@ -187,6 +203,12 @@ class QRDetector {
         
         // Accumulate characters (ignore special keys)
         if (event.key && event.key.length === 1) {
+            // SAFETY CHECK: Don't accumulate characters from form elements
+            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT')) {
+                console.log('🔫 Character input in form element - ignoring for scanner gun');
+                return;
+            }
+            
             // If typing is very fast (< 50ms), likely scanner gun
             if (timeBetweenKeys < 50 && this.scannerBuffer.length === 0) {
                 this.updateScannerGunUI('Scanning...', 'active');
