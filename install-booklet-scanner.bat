@@ -39,10 +39,31 @@ if exist "%REPO_NAME%\start.bat" (
 )
 
 echo [1/3] Downloading from GitHub...
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; Invoke-WebRequest '%ZIP_URL%' -OutFile 'temp.zip'"
+
+REM Test internet connectivity first
+echo [INFO] Testing internet connectivity...
+ping -n 1 8.8.8.8 >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [WARNING] No internet connection detected - trying anyway...
+    timeout /t 2 /nobreak >nul
+) else (
+    echo [OK] Internet connection confirmed
+)
+
+echo [INFO] Downloading from GitHub repository...
+powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; $ProgressPreference='SilentlyContinue'; Invoke-WebRequest '%ZIP_URL%' -OutFile 'temp.zip' -UseBasicParsing -TimeoutSec 30; Write-Host '[OK] Download completed successfully' } catch { Write-Host '[ERROR] Download failed: ' + $_.Exception.Message; exit 1 }"
 
 if not exist "temp.zip" (
-    echo [ERROR] Download failed. Check internet connection and repository URL.
+    echo.
+    echo [ERROR] Download failed. Possible causes:
+    echo [ERROR] 1. No internet connection
+    echo [ERROR] 2. Firewall blocking the download
+    echo [ERROR] 3. GitHub repository not accessible
+    echo [ERROR] 4. Corporate network restrictions
+    echo.
+    echo [INFO] Repository URL: %REPO_URL%
+    echo [INFO] Direct download: %ZIP_URL%
+    echo.
     pause & exit /b 1
 )
 
