@@ -113,10 +113,23 @@
 
 ---
 
-## 🎉 Get Started Today
+## Credits & Acknowledgments
+
+**Developed at NMIMS (Narsee Monjee Institute of Management Studies)**
+
+Made with ❤️ in MPSTME (Mukesh Patel School of Technology Management & Engineering)
+
+**Project Lead:** Dr. Sunny Nanade
+
+### About NMIMS MPSTME
+MPSTME is a leading technology and management school that focuses on innovation in education and practical application of technology. This project represents our commitment to creating solutions that benefit the broader community.
+
+---
+
+## Get Started Today
 
 Ready to transform your document scanning workflow?
 
-**[📥 Download Booklet Scanner](https://github.com/sunny-nanade/BookletDC/raw/main/install-booklet-scanner.bat)**
+**[Download Booklet Scanner](https://github.com/sunny-nanade/BookletDC/raw/main/install-booklet-scanner.bat)** ← *Right-click and "Save As"*
 
 *Professional document scanning in under 60 seconds.*
