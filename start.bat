@@ -2,6 +2,13 @@
 echo Starting Booklet Scanner Application...
 echo.
 
+REM Check if this is a restart after Python installation
+if exist ".python_installed_flag" (
+    echo [INFO] Restarted after Python installation - checking if PATH is updated...
+    del ".python_installed_flag"
+    timeout /t 2 /nobreak >nul
+)
+
 echo Checking Python installation...
 
 REM Anaconda-safe Python detection
@@ -121,53 +128,21 @@ echo Installing Python with the following options:
         echo.
         echo [OK] Python installation completed successfully!
         echo.
-        echo [INFO] Refreshing environment variables...
+        echo [INFO] Python installed - environment variables need to be refreshed
+        echo [INFO] Starting a new session with fresh environment variables...
+        echo.
+        echo Launching Booklet Scanner in new window...
+        timeout /t 2 /nobreak >nul
         
-        REM Force refresh environment variables by calling a sub-routine
-        call :refresh_env
-        
-        echo Waiting for PATH to update...
-        timeout /t 5 /nobreak >nul
-        
-        echo Verifying Python installation...
-        
-        REM Try multiple times as PATH might need time to update
-        set RETRY_COUNT=0
-        :verify_python
-        set /a RETRY_COUNT+=1
-        
-        py --version >nul 2>&1
-        if %errorlevel% equ 0 (
-            set PYTHON_CMD=py
-            echo [OK] Python verification successful using 'py' launcher!
-            py --version
-            goto :setup_venv
-        )
-        
-        python --version >nul 2>&1
-        if %errorlevel% equ 0 (
-            set PYTHON_CMD=python
-            echo [OK] Python verification successful using 'python' command!
-            python --version
-            goto :setup_venv
-        )
-        
-        if %RETRY_COUNT% lss 3 (
-            echo [INFO] Python not immediately available, retrying in 3 seconds... (attempt %RETRY_COUNT%/3)
-            timeout /t 3 /nobreak >nul
-            goto :verify_python
-        )
+        REM Launch the post-install script in a new command prompt with fresh environment
+        start "Booklet Scanner - Fresh Environment" cmd /c "start_after_python_install.bat"
         
         echo.
-        echo [ERROR] Python installed but not accessible after multiple attempts
-        echo [INFO] This can happen due to PATH environment variable not updating immediately
-        echo [INFO] Please try one of these solutions:
-        echo [INFO] 1. Close this window and run start.bat again
-        echo [INFO] 2. Open a new command prompt and run start.bat
-        echo [INFO] 3. Restart your computer and try again
+        echo [INFO] Booklet Scanner started in new window with fresh Python environment
+        echo [INFO] You can close this window
         echo.
         pause
-        exit /b 1
+        exit /b 0
     ) else (
         echo.
         echo [ERROR] Python installation failed with error code: %errorlevel%
@@ -221,22 +196,36 @@ echo Installing/updating dependencies...
 REM Check if pip is available
 pip --version >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [ERROR] pip is not available
-    echo [INFO] Trying to install/repair pip...
-    %PYTHON_CMD% -m ensurepip --upgrade
+    echo [WARNING] pip command not available directly
+    echo [INFO] Trying to use pip via Python module...
+    %PYTHON_CMD% -m pip --version >nul 2>&1
     if %errorlevel% neq 0 (
-        echo [ERROR] Failed to install pip
-        echo [INFO] Please check your Python installation
-        pause
-        exit /b 1
+        echo [ERROR] pip is not available at all
+        echo [INFO] Trying to install/repair pip...
+        %PYTHON_CMD% -m ensurepip --upgrade
+        if %errorlevel% neq 0 (
+            echo [ERROR] Failed to install pip
+            echo [INFO] Please check your Python installation
+            pause
+            exit /b 1
+        )
+        echo [OK] pip installed successfully
+    ) else (
+        echo [OK] pip available via Python module
+        echo [INFO] Using '%PYTHON_CMD% -m pip' instead of 'pip' command
+        set "PIP_CMD=%PYTHON_CMD% -m pip"
+        goto :pip_ready
     )
 )
 
-echo [OK] pip is available
-pip --version
+echo [OK] pip is available directly
+set "PIP_CMD=pip"
+
+:pip_ready
+%PIP_CMD% --version
 
 echo [INFO] Installing required packages...
-pip install -r requirements.txt
+%PIP_CMD% install -r requirements.txt
 if %errorlevel% neq 0 (
     echo.
     echo [ERROR] Failed to install dependencies
@@ -248,6 +237,8 @@ if %errorlevel% neq 0 (
     echo.
     echo [INFO] Attempting to continue anyway...
     timeout /t 3 /nobreak >nul
+) else (
+    echo [OK] Dependencies installed successfully
 )
 
 echo.
