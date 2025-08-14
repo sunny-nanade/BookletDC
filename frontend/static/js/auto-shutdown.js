@@ -130,16 +130,7 @@ class AutoShutdown {
 // Initialize auto-shutdown when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.autoShutdown = new AutoShutdown();
-    
-    // Add manual shutdown button listener
-    const shutdownButton = document.getElementById('shutdown-button');
-    if (shutdownButton) {
-        shutdownButton.addEventListener('click', () => {
-            console.log('🛑 Manual shutdown button clicked');
-            window.autoShutdown.manualShutdown();
-        });
-        console.log('🔄 Manual shutdown button listener added');
-    }
+    console.log('🔄 Auto-shutdown system initialized - heartbeat-based monitoring active');
 });
 
 // Make it globally accessible
