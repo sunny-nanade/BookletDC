@@ -6,88 +6,29 @@
 class AutoShutdown {
     constructor() {
         this.shutdownSent = false;
-        this.heartbeatInterval = null;
-        this.lastHeartbeat = Date.now();
         this.setupEventListeners();
-        this.startHeartbeat();
-        console.log('🔄 Auto-shutdown system initialized - server will stop when browser closes');
-        console.log('🔄 Using heartbeat mechanism + immediate shutdown detection');
+        console.log('🔄 Auto-shutdown system initialized - will shutdown on browser close');
     }
 
     setupEventListeners() {
-        // Immediate shutdown on page unload - simplified approach
+        // Handle page unload events
         window.addEventListener('beforeunload', (e) => {
-            console.log('🔄 beforeunload event - attempting immediate shutdown');
+            console.log('🔄 beforeunload event - sending shutdown signal');
             this.sendShutdownSignal();
         });
 
         window.addEventListener('unload', () => {
-            console.log('🔄 unload event - attempting immediate shutdown');
+            console.log('🔄 unload event - sending shutdown signal');
             this.sendShutdownSignal();
         });
 
-        // More reliable: pagehide event
+        // Handle pagehide event (more reliable for mobile)
         window.addEventListener('pagehide', (e) => {
-            console.log('🔄 pagehide event - attempting immediate shutdown');
+            console.log('🔄 pagehide event - sending shutdown signal');
             this.sendShutdownSignal();
         });
-
-        // Handle visibility change with shorter delay
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                console.log('🔄 Page became hidden - stopping heartbeat, server will auto-shutdown in ~5 seconds');
-                this.stopHeartbeat();
-            } else {
-                console.log('🔄 Page became visible again - resuming heartbeat');
-                this.startHeartbeat();
-            }
-        });
-
-        // Handle focus loss
-        window.addEventListener('blur', () => {
-            console.log('🔄 Window lost focus - stopping heartbeat');
-            this.stopHeartbeat();
-        });
-
-        window.addEventListener('focus', () => {
-            console.log('🔄 Window gained focus - resuming heartbeat');
-            this.startHeartbeat();
-        });
         
-        console.log('✅ Auto-shutdown event listeners registered (heartbeat + immediate mode)');
-    }
-
-    startHeartbeat() {
-        if (this.heartbeatInterval) {
-            clearInterval(this.heartbeatInterval);
-        }
-        
-        this.heartbeatInterval = setInterval(() => {
-            this.sendHeartbeat();
-        }, 2000); // Send heartbeat every 2 seconds
-        
-        console.log('� Heartbeat started - server will know browser is alive');
-    }
-
-    stopHeartbeat() {
-        if (this.heartbeatInterval) {
-            clearInterval(this.heartbeatInterval);
-            this.heartbeatInterval = null;
-            console.log('� Heartbeat stopped - server will auto-shutdown if no heartbeat for 5 seconds');
-        }
-    }
-
-    async sendHeartbeat() {
-        try {
-            await fetch('/api/heartbeat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ timestamp: Date.now() })
-            });
-            this.lastHeartbeat = Date.now();
-        } catch (error) {
-            console.error('💔 Heartbeat failed:', error);
-        }
+        console.log('✅ Auto-shutdown event listeners registered (simple mode)');
     }
 
     async sendShutdownSignal() {
@@ -117,20 +58,12 @@ class AutoShutdown {
             console.error('❌ Could not send shutdown signal:', error);
         }
     }
-
-    // Manual shutdown method
-    manualShutdown() {
-        console.log('🛑 Manual shutdown requested - stopping heartbeat and shutting down immediately');
-        this.stopHeartbeat();
-        this.shutdownSent = false; // Reset flag to allow manual shutdown
-        this.sendShutdownSignal();
-    }
 }
 
 // Initialize auto-shutdown when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.autoShutdown = new AutoShutdown();
-    console.log('🔄 Auto-shutdown system initialized - heartbeat-based monitoring active');
+    console.log('🔄 Auto-shutdown system initialized - simple event-based monitoring');
 });
 
 // Make it globally accessible

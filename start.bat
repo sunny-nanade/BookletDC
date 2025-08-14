@@ -167,9 +167,10 @@ start http://127.0.0.1:9000
 echo.
 echo ============================================
 echo  AUTO-SHUTDOWN:
-echo  - Close browser tab/window to stop server
-echo  - Black terminal window: Press Ctrl+C to close
-echo  - Or just close the terminal window directly
+echo  - Close browser tab/window to attempt shutdown
+echo  - May not work reliably due to browser restrictions
+echo  - Close terminal window manually: Ctrl+C then Y
+echo  - Or just close terminal window directly
 echo ============================================
 echo.
 echo Server starting... Browser should open automatically.
